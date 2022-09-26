@@ -1,0 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
+/*   Updated: 2022/09/27 01:39:09 by cchetana         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef	PHILO_H
+# define PHILO_H
+
+# include <limits.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/time.h>
+# include <unistd.h>
+
+# include "philo_colour.h"
+
+typedef struct timeval time_v;
+
+typedef struct s_time
+{
+	long	die;
+	long	eat;
+	long	sleep;
+	int		n_eat;
+}	t_time;
+
+typedef struct s_death
+{
+	int				found;
+	pthread_mutex_t	lock;
+}	t_death;
+
+typedef	struct s_info
+{
+	int			n_philo;
+	t_time		time_to;
+}	t_info;
+
+typedef struct s_philo
+{
+	t_info			*info;
+	t_death			*dead;
+	time_v			kickoff;
+	time_v			hp;
+	char			cur_act;
+	int				s_philo;
+	int				n_ate;
+	int				l_fork;
+	int				r_fork;
+	pthread_t		life;
+	pthread_mutex_t	*used_fork;
+}	t_philo;
+
+// - validator - //
+int		ft_isspace(char c);
+int		ft_isdigit(char c);
+int		is_validinput(int ac, char **av);
+
+// - error handler - //
+void	invalid_input_msg(void);
+int		malloc_error(void);
+int		error_input(void);
+
+// - free - //
+void	free_at_exit(t_philo **philo);
+
+// - initiator - //
+void	philo_init(t_philo **philo, int n_philo, int argc, char **argv);
+
+// - circle of life - //
+void	*life_cycle(void *philo_addr);
+int		still_alive(time_v now, t_philo *philo);
+int		get_timestamp(time_v now, time_v then);
+
+// - life w/ forks - //
+void	look_for_forks(t_philo *philo, int *fork, char side);
+void	put_forks_back(t_philo *philo);
+
+// - utils - //
+int		ft_atoi(const char *str);
+void	print_log(int s_philo, long timestamp, const char *act);
+
+#endif
