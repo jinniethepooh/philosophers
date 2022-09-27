@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 23:07:18 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 18:26:28 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:13:25 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static int	get_fork_index(t_philo *philo, char side)
 {
-	if (philo->info->n_philo == 1)
+	if (philo->info.n_philo == 1)
 		return (0);
-	if (philo->s_philo == philo->info->n_philo)
+	if (philo->s_philo == philo->info.n_philo)
 		if (side == 'r')
 			return (0);
 	if (side == 'l')

@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 18:28:26 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:18:29 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static int	still_eating(t_philo *philo)
 {
-	if (philo->info->time_to.n_eat == -1)
+	if (philo->info.time_to.n_eat == -1)
 		return (1);
-	if (philo->n_ate < philo->info->time_to.n_eat)
+	if (philo->n_ate < philo->info.time_to.n_eat)
 		return (1);
 	return (0);
 }
@@ -50,18 +50,16 @@ static void	sleep_cycle(t_philo *philo)
 	time_v	now;
 
 	gettimeofday(&now, NULL);
-	// if (philo->cur_act == 's' && !philo->dead->found && still_eating(philo))
 	if (!philo->dead->found && still_eating(philo))
 	{
 		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
 			"is sleeping\n");
-		usleep(philo->info->time_to.sleep * 1000);
+		usleep(philo->info.time_to.sleep * 1000);
 		if (philo->dead->found)
 			return ;
 		gettimeofday(&now, NULL);
 		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
 			"is thinking\n");
-		// philo->cur_act = 'e';
 	}
 }
 
@@ -70,7 +68,6 @@ static void	eat_cycle(t_philo *philo)
 	time_v	now;
 
 	gettimeofday(&now, NULL);
-	// if (philo->cur_act == 'e' && still_eating(philo))
 	if (still_eating(philo))
 	{
 		if (!philo->l_fork || !philo->r_fork)
@@ -85,9 +82,8 @@ static void	eat_cycle(t_philo *philo)
 				"is eating\n");
 			philo->hp = now;
 			philo->n_ate += 1;
-			usleep(philo->info->time_to.eat * 1000);
+			usleep(philo->info.time_to.eat * 1000);
 			put_forks_back(philo);
-			// philo->cur_act = 's';
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 09:42:11 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/27 19:33:46 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,10 @@ typedef	struct s_info
 
 typedef struct s_philo
 {
-	t_info			*info;
+	t_info			info;
 	t_death			*dead;
 	time_v			kickoff;
 	time_v			hp;
-	char			cur_act;
 	int				s_philo;
 	int				n_ate;
 	int				l_fork;
@@ -59,15 +58,21 @@ typedef struct s_philo
 	pthread_mutex_t	*used_fork;
 }	t_philo;
 
-// - validator - //
+// - checker - //
 int		ft_isspace(char c);
 int		ft_isdigit(char c);
 int		is_validinput(int ac, char **av);
 
 // - error handler - //
-void	invalid_input_msg(void);
-int		malloc_error(void);
+void	*malloc_error(void);
+void	*thread_init_error(void);
 int		error_input(void);
+
+// - helper - //
+int		ft_atoi(const char *str);
+int		get_timestamp(time_v now, time_v then);
+int		still_alive(time_v now, t_philo *philo);
+void	print_log(int s_philo, long timestamp, const char *act);
 
 // - free - //
 void	free_at_exit(t_philo **philo);
@@ -77,15 +82,9 @@ void	philo_init(t_philo **philo, int n_philo, int argc, char **argv);
 
 // - circle of life - //
 void	*life_cycle(void *philo_addr);
-int		still_alive(time_v now, t_philo *philo);
-int		get_timestamp(time_v now, time_v then);
 
 // - life w/ forks - //
 void	look_for_forks(t_philo *philo, int *fork, char side);
 void	put_forks_back(t_philo *philo);
-
-// - utils - //
-int		ft_atoi(const char *str);
-void	print_log(int s_philo, long timestamp, const char *act);
 
 #endif
