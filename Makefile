@@ -21,7 +21,7 @@ RM		= rm -rf
 
 RED		= "\033[0;31m"
 BGREEN	= "\033[1;32m"
-GREEN	= "\033[0;32m"
+MAG		= "\033[0;35m"
 ENDCL	= "\033[0;37m"
 
 all: $(NAME)
@@ -38,13 +38,13 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 
 clean:
 	@$(RM) $(OBJ_DIR)
-	@echo $(GREEN)"... finished cleaning"$(ENDCL)
+	@echo $(MAG)"... finished cleaning"$(ENDCL)
 
 fclean:
 	@$(RM) $(OBJ_DIR)
 	@$(RM) $(NAME)
 	@$(RM) $(NAME).dSYM
-	@echo $(GREEN)"... finished f-cleaning"$(ENDCL)
+	@echo $(MAG)"... finished f-cleaning"$(ENDCL)
 
 re: fclean all
 

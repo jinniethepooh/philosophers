@@ -6,11 +6,20 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 01:39:35 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/27 18:28:26 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	still_eating(t_philo *philo)
+{
+	if (philo->info->time_to.n_eat == -1)
+		return (1);
+	if (philo->n_ate < philo->info->time_to.n_eat)
+		return (1);
+	return (0);
+}
 
 void	*hp_tracker(void *philo_addr)
 {
@@ -18,7 +27,7 @@ void	*hp_tracker(void *philo_addr)
 	time_v	now;
 
 	philo = (t_philo *)philo_addr;
-	while (!philo->dead->found)
+	while (!philo->dead->found && still_eating(philo))
 	{
 		gettimeofday(&now, NULL);
 		pthread_mutex_lock(&(philo-> dead->lock));
@@ -41,7 +50,8 @@ static void	sleep_cycle(t_philo *philo)
 	time_v	now;
 
 	gettimeofday(&now, NULL);
-	if (philo->cur_act == 's' && !philo->dead->found)
+	// if (philo->cur_act == 's' && !philo->dead->found && still_eating(philo))
+	if (!philo->dead->found && still_eating(philo))
 	{
 		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
 			"is sleeping\n");
@@ -51,17 +61,8 @@ static void	sleep_cycle(t_philo *philo)
 		gettimeofday(&now, NULL);
 		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
 			"is thinking\n");
-		philo->cur_act = 'e';
+		// philo->cur_act = 'e';
 	}
-}
-
-static int	still_eating(t_philo *philo)
-{
-	if (philo->info->time_to.n_eat == -1)
-		return (1);
-	if (philo->n_ate < philo->info->time_to.n_eat)
-		return (1);
-	return (0);
 }
 
 static void	eat_cycle(t_philo *philo)
@@ -69,9 +70,10 @@ static void	eat_cycle(t_philo *philo)
 	time_v	now;
 
 	gettimeofday(&now, NULL);
-	if (philo->cur_act == 'e' && still_eating(philo))
+	// if (philo->cur_act == 'e' && still_eating(philo))
+	if (still_eating(philo))
 	{
-		while ((!philo->l_fork || !philo->r_fork) && !philo->dead->found)
+		if (!philo->l_fork || !philo->r_fork)
 		{
 			look_for_forks(philo, &(philo->l_fork), 'l');
 			look_for_forks(philo, &(philo->r_fork), 'r');
@@ -85,7 +87,7 @@ static void	eat_cycle(t_philo *philo)
 			philo->n_ate += 1;
 			usleep(philo->info->time_to.eat * 1000);
 			put_forks_back(philo);
-			philo->cur_act = 's';
+			// philo->cur_act = 's';
 		}
 	}
 }
@@ -97,10 +99,10 @@ void	*life_cycle(void *philo_addr)
 
 	philo = philo_addr;
 	pthread_create(&hp_tracking, NULL, &hp_tracker, philo);	// to have error handler
-	while (!philo->dead->found)
+	while (!philo->dead->found && still_eating(philo))
 	{
-		sleep_cycle(philo);
 		eat_cycle(philo);
+		sleep_cycle(philo);
 	}
 	pthread_detach(hp_tracking);
 	return (NULL);
