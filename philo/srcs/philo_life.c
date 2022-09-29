@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 19:18:29 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/28 18:14:48 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ void	*life_cycle(void *philo_addr)
 	pthread_t	hp_tracking;
 
 	philo = philo_addr;
-	pthread_create(&hp_tracking, NULL, &hp_tracker, philo);	// to have error handler
+	if (pthread_create(&hp_tracking, NULL, &hp_tracker, philo))
+		return (thread_init_error());
 	while (!philo->dead->found && still_eating(philo))
 	{
 		eat_cycle(philo);

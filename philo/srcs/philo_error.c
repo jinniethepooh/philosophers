@@ -6,11 +6,32 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 19:30:23 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/09/28 18:23:15 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	free_mutual(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	if (philo->used_fork)
+	{
+		while (i < philo->info.n_philo)
+		{
+			pthread_mutex_destroy(&(philo->used_fork[i]));
+			i++;
+		}
+		free(philo->used_fork);
+	}
+	if (philo->dead)
+	{
+		pthread_mutex_destroy(&(philo->dead->lock));
+		free(philo->dead);
+	}
+}
 
 void	free_at_exit(t_philo **philo)
 {
@@ -21,14 +42,11 @@ void	free_at_exit(t_philo **philo)
 	{
 		while (philo[i])
 		{
-			if (!i)
-			{
-				if (philo[i]->used_fork)
-					free(philo[i]->used_fork);
-				if (philo[i]->dead)
-					free(philo[i]->dead);
-			}
-			free(philo[i++]);
+			if (i == 0)
+				free_mutual(philo[i]);
+			pthread_detach(philo[i]->life);
+			free(philo[i]);
+			i++;
 		}
 	}
 	free(philo);
