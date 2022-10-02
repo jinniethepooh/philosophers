@@ -6,11 +6,11 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 01:03:50 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:42:05 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PHILO_BONUS_H
+#ifndef PHILO_BONUS_H
 # define PHILO_BONUS_H
 
 # include <limits.h>
@@ -24,7 +24,7 @@
 
 # include "philo_colour.h"
 
-typedef struct timeval time_v;
+typedef struct timeval t_timeval;
 
 typedef struct s_time
 {
@@ -50,17 +50,17 @@ typedef struct s_semaphore
 
 typedef struct s_philo
 {
-	t_info	info;
-	time_v	kickoff;
-	time_v	hp;
-	int		s_philo;
-	int		n_ate;
-	int		l_fork;
-	int		r_fork;
-	sem_t	*dead;
-	sem_t	*end;
-	sem_t	*forks;
-	sem_t	*limit;
+	t_info		info;
+	t_timeval	kickoff;
+	t_timeval	hp;
+	int			s_philo;
+	int			n_ate;
+	int			l_fork;
+	int			r_fork;
+	sem_t		*dead;
+	sem_t		*end;
+	sem_t		*forks;
+	sem_t		*limit;
 }	t_philo;
 
 // - checker - //
@@ -73,8 +73,8 @@ int		error_input(void);
 
 // - helper - //
 int		ft_atoi(const char *str);
-int		get_timestamp(time_v now, time_v then);
-int		still_alive(time_v now, t_philo *philo);
+int		get_timestamp(t_timeval now, t_timeval then);
+int		still_alive(t_timeval now, t_philo *philo);
 void	print_log(int s_philo, long timestamp, const char *act);
 
 // - free - //

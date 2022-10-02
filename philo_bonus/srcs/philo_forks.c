@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 23:07:18 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/02 22:59:57 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:42:33 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	put_forks_back(t_philo *philo)
 
 void	look_for_forks(t_philo *philo)
 {
-	time_v	now;
+	t_timeval	now;
 
 	sem_wait(philo->forks);
 	gettimeofday(&now, NULL);

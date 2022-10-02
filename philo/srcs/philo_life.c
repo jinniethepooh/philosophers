@@ -6,13 +6,13 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:25:17 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:39:04 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	end_point_found(t_philo *philo, time_v now)
+static int	end_point_found(t_philo *philo, t_timeval now)
 {
 	return ((!still_alive(now, philo) && !philo->end->found) || \
 				philo->end->limit_counter == philo->info.n_philo);
@@ -20,8 +20,8 @@ static int	end_point_found(t_philo *philo, time_v now)
 
 void	*hp_tracker(void *philo_addr)
 {
-	t_philo	*philo;
-	time_v	now;
+	t_philo		*philo;
+	t_timeval	now;
 
 	philo = (t_philo *)philo_addr;
 	while (!philo->end->found)
@@ -45,7 +45,7 @@ void	*hp_tracker(void *philo_addr)
 
 static void	sleep_cycle(t_philo *philo)
 {
-	time_v	now;
+	t_timeval	now;
 
 	gettimeofday(&now, NULL);
 	if (!philo->end->found)
@@ -63,7 +63,7 @@ static void	sleep_cycle(t_philo *philo)
 
 static void	eat_cycle(t_philo *philo)
 {
-	time_v	now;
+	t_timeval	now;
 
 	if (!philo->l_fork || !philo->r_fork)
 	{

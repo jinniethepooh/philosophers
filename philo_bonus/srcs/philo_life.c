@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 00:56:06 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:43:21 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	*limit_tracker(void *philo_addr)
 
 void	*hp_tracker(void *philo_addr)
 {
-	t_philo	*philo;
-	time_v	now;
+	t_philo		*philo;
+	t_timeval	now;
 
 	philo = (t_philo *)philo_addr;
 	while (1)
@@ -53,7 +53,7 @@ void	*hp_tracker(void *philo_addr)
 
 static void	sleep_cycle(t_philo *philo)
 {
-	time_v	now;
+	t_timeval	now;
 
 	gettimeofday(&now, NULL);
 	sem_wait(philo->dead);
@@ -70,7 +70,7 @@ static void	sleep_cycle(t_philo *philo)
 
 static void	eat_cycle(t_philo *philo)
 {
-	time_v	now;
+	t_timeval	now;
 
 	if (!philo->l_fork || !philo->r_fork)
 		look_for_forks(philo);

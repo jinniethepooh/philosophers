@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 23:07:18 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 01:36:59 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:37:02 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void	put_forks_back(t_philo *philo)
 
 void	look_for_forks(t_philo *philo, int *fork, char side)
 {
-	time_v	now;
-	int		index;
+	t_timeval	now;
+	int			index;
 
 	index = get_fork_index(philo, side);
 	pthread_mutex_lock(&(philo->used_fork[index]));

@@ -6,13 +6,13 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 00:06:47 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:44:26 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-int		limit_tracker_init(t_philo *philo, int time_to_eat)
+int	limit_tracker_init(t_philo *philo, int time_to_eat)
 {
 	pthread_t	limit_tracking;
 
@@ -25,7 +25,7 @@ int		limit_tracker_init(t_philo *philo, int time_to_eat)
 	return (0);
 }
 
-int		hp_tracker_init(t_philo *philo)
+int	hp_tracker_init(t_philo *philo)
 {
 	pthread_t	hp_tracking;
 
@@ -74,7 +74,7 @@ static int	semaphore_init(t_semaphore *tmp, int n_philo)
 int	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
 {
 	int			n;
-	time_v		now;
+	t_timeval	now;
 	t_semaphore	tmp;
 
 	if (semaphore_init(&tmp, n_philo))

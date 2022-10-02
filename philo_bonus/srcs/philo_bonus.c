@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:36:49 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 00:53:41 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:45:23 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	fork_philo(t_philo **philo, int *f_pid, int n_philo)
 static t_philo	**prep_philo(int n_philo)
 {
 	t_philo	**philo;
-	int			n;
+	int		n;
 
 	philo = (t_philo **)malloc(sizeof(t_philo *) * (n_philo + 1));
 	if (!philo)
@@ -88,4 +88,3 @@ int	main(int argc, char **argv)
 	}
 	return (EXIT_FAILURE);
 }
-

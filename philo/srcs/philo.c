@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:36:49 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:22:29 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:30:54 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static t_philo	**prep_philo(int n_philo)
 {
 	t_philo	**philo;
-	int			n;
+	int		n;
 
 	philo = (t_philo **)malloc(sizeof(t_philo *) * (n_philo + 1));
 	if (!philo)

@@ -6,13 +6,13 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:26:39 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:38:02 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static pthread_mutex_t *fork_init(int n_philo)
+static pthread_mutex_t	*fork_init(int n_philo)
 {
 	int					i;
 	pthread_mutex_t		*f;
@@ -30,7 +30,7 @@ static pthread_mutex_t *fork_init(int n_philo)
 	return (f);
 }
 
-static t_end *end_init(void)
+static t_end	*end_init(void)
 {
 	t_end		*e;
 
@@ -84,7 +84,7 @@ static void	*thread_init(t_philo **philo, int n_philo)
 void	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
 {
 	int					n;
-	time_v				now;
+	t_timeval			now;
 	t_end				*e;
 	pthread_mutex_t		*f;
 

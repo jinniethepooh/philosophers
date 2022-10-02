@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:35:46 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 19:30:33 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:37:46 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	ft_atoi(const char *str)
 	return (nbr * sign);
 }
 
-int	get_timestamp(time_v now, time_v then)
+int	get_timestamp(t_timeval now, t_timeval then)
 {
 	int	gap;
 
@@ -46,10 +46,10 @@ int	get_timestamp(time_v now, time_v then)
 	return (gap);
 }
 
-int	still_alive(time_v now, t_philo *philo)
+int	still_alive(t_timeval now, t_philo *philo)
 {
-	int		gap;
-	time_v	then;
+	int			gap;
+	t_timeval	then;
 
 	then = philo->hp;
 	gap = get_timestamp(now, then);
