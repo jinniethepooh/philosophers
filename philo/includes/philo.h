@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/27 19:33:46 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:25:48 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,12 @@ typedef struct s_time
 	int		n_eat;
 }	t_time;
 
-typedef struct s_death
+typedef struct s_end
 {
+	int				limit_counter;
 	int				found;
-	pthread_mutex_t	lock;
-}	t_death;
+	pthread_mutex_t	dead_lock;
+}	t_end;
 
 typedef	struct s_info
 {
@@ -47,7 +48,7 @@ typedef	struct s_info
 typedef struct s_philo
 {
 	t_info			info;
-	t_death			*dead;
+	t_end			*end;
 	time_v			kickoff;
 	time_v			hp;
 	int				s_philo;

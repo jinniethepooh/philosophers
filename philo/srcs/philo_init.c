@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/02 13:02:13 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:26:39 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,18 @@ static pthread_mutex_t *fork_init(int n_philo)
 	return (f);
 }
 
-static t_death *death_init(void)
+static t_end *end_init(void)
 {
-	t_death		*d;
+	t_end		*e;
 
-	d = (t_death *)malloc(sizeof(t_death));
-	if (!d)
+	e = (t_end *)malloc(sizeof(t_end));
+	if (!e)
 		return (malloc_error());
-	if (pthread_mutex_init(&(d->lock), NULL))
+	if (pthread_mutex_init(&(e->dead_lock), NULL))
 		return (thread_init_error());
-	d->found = 0;
-	return (d);
+	e->found = 0;
+	e->limit_counter = 0;
+	return (e);
 }
 
 static void	get_general_input(t_philo *philo, int argc, char **argv)
@@ -67,7 +68,7 @@ static void	*thread_init(t_philo **philo, int n_philo)
 	{
 		if (pthread_create(&(philo[n]->life), NULL, &life_cycle, philo[n]))
 			return (thread_init_error());
-		usleep(10);
+		usleep(5);
 		n++;
 	}
 	n = 0;
@@ -84,14 +85,14 @@ void	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
 {
 	int					n;
 	time_v				now;
+	t_end				*e;
 	pthread_mutex_t		*f;
-	t_death				*d;
 
 	n = 0;
 	gettimeofday(&now, NULL);
 	f = fork_init(n_philo);
-	d = death_init();
-	if (!f || !d)
+	e = end_init();
+	if (!f || !e)
 		return ;
 	while (n < n_philo)
 	{
@@ -99,7 +100,7 @@ void	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
 		philo[n]->hp = now;
 		philo[n]->s_philo = n + 1;
 		philo[n]->used_fork = f;
-		philo[n]->dead = d;
+		philo[n]->end = e;
 		get_general_input(philo[n], argc, argv);
 		n++;
 	}

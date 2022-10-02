@@ -6,13 +6,13 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 00:25:03 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 01:12:35 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	free_mutual(t_philo *philo)
+static void	free_mutual(t_philo *philo)
 {
 	sem_close(philo->dead);
 	sem_close(philo->end);
@@ -20,7 +20,7 @@ void	free_mutual(t_philo *philo)
 	sem_close(philo->limit);
 }
 
-void	error_msg(int exit_code)
+static void	error_msg(int exit_code)
 {
 	if (exit_code == 1)
 		printf("[ERROR] could not malloc\n");

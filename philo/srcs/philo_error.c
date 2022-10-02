@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/28 18:23:15 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:23:34 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	free_mutual(t_philo *philo)
 		}
 		free(philo->used_fork);
 	}
-	if (philo->dead)
+	if (philo->end)
 	{
-		pthread_mutex_destroy(&(philo->dead->lock));
-		free(philo->dead);
+		pthread_mutex_destroy(&(philo->end->dead_lock));
+		free(philo->end);
 	}
 }
 
@@ -67,8 +67,11 @@ void	*thread_init_error(void)
 int	error_input(void)
 {
 	printf(BRED"[ERROR]"RED" invalid input\n"RES);
-	printf(MAG"./philo [no. of philos] [time_to_die]");
-	printf(" [time_to_eat] [time_to_sleep]");
-	printf(" opt[number_of_times_each_philo_must_eat]\n"RES);
+	printf("./philo_bonus [1] [2] [3] [4] [5]\n");
+	printf("[1] no. of philos\n");
+	printf("[2] time to die\n");
+	printf("[3] time to eat\n");
+	printf("[4] time to sleep\n");
+	printf("[5] (optional) number of times each philo must eat\n");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/13 19:46:57 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/24 17:17:01 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 01:11:31 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define BLK "\e[0;30m"
 # define RED "\e[0;31m"
 # define GRN "\e[0;32m"
-# define YEL "\e[0;33m"
+# define YEL "\e[38;5;228m"
 # define BLU "\e[0;34m"
 # define MAG "\e[0;35m"
 # define CYN "\e[0;36m"
