@@ -6,41 +6,33 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/02 13:02:13 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 00:06:47 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
-static pthread_mutex_t *fork_init(int n_philo)
+int		limit_tracker_init(t_philo *philo, int time_to_eat)
 {
-	int					i;
-	pthread_mutex_t		*f;
+	pthread_t	limit_tracking;
 
-	f = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * n_philo);
-	if (!f)
-		return (malloc_error());
-	i = 0;
-	while (i < n_philo)
+	if (time_to_eat != -1)
 	{
-		if (pthread_mutex_init(&f[i], NULL))
-			return (thread_init_error());
-		i++;
+		if (pthread_create(&limit_tracking, NULL, &limit_tracker, philo))
+			return (1);
+		pthread_detach(limit_tracking);
 	}
-	return (f);
+	return (0);
 }
 
-static t_death *death_init(void)
+int		hp_tracker_init(t_philo *philo)
 {
-	t_death		*d;
+	pthread_t	hp_tracking;
 
-	d = (t_death *)malloc(sizeof(t_death));
-	if (!d)
-		return (malloc_error());
-	if (pthread_mutex_init(&(d->lock), NULL))
-		return (thread_init_error());
-	d->found = 0;
-	return (d);
+	if (pthread_create(&hp_tracking, NULL, &hp_tracker, philo))
+		return (1);
+	pthread_detach(hp_tracking);
+	return (0);
 }
 
 static void	get_general_input(t_philo *philo, int argc, char **argv)
@@ -58,51 +50,49 @@ static void	get_general_input(t_philo *philo, int argc, char **argv)
 	philo->n_ate = 0;
 }
 
-static void	*thread_init(t_philo **philo, int n_philo)
+static int	semaphore_init(t_semaphore *tmp, int n_philo)
 {
-	int	n;
-
-	n = 0;
-	while (n < n_philo)
-	{
-		if (pthread_create(&(philo[n]->life), NULL, &life_cycle, philo[n]))
-			return (thread_init_error());
-		usleep(10);
-		n++;
-	}
-	n = 0;
-	while (n < n_philo)
-	{
-		if (pthread_join(philo[n]->life, NULL))
-			return (thread_init_error());
-		n++;
-	}
-	return (NULL);
+	sem_unlink("death");
+	sem_unlink("end");
+	sem_unlink("forks");
+	sem_unlink("limit");
+	tmp->dead = sem_open("death", O_CREAT | O_EXCL, 0644, 1);
+	if (tmp->dead == SEM_FAILED)
+		return (3);
+	tmp->end = sem_open("end", O_CREAT | O_EXCL, 0644, 0);
+	if (tmp->end == SEM_FAILED)
+		return (3);
+	tmp->forks = sem_open("forks", O_CREAT | O_EXCL, 0644, n_philo);
+	if (tmp->forks == SEM_FAILED)
+		return (3);
+	tmp->limit = sem_open("limit", O_CREAT | O_EXCL, 0644, 0);
+	if (tmp->limit == SEM_FAILED)
+		return (3);
+	return (0);
 }
 
-void	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
+int	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
 {
-	int					n;
-	time_v				now;
-	pthread_mutex_t		*f;
-	t_death				*d;
+	int			n;
+	time_v		now;
+	t_semaphore	tmp;
 
+	if (semaphore_init(&tmp, n_philo))
+		return (3);
 	n = 0;
 	gettimeofday(&now, NULL);
-	f = fork_init(n_philo);
-	d = death_init();
-	if (!f || !d)
-		return ;
 	while (n < n_philo)
 	{
 		philo[n]->kickoff = now;
 		philo[n]->hp = now;
 		philo[n]->s_philo = n + 1;
-		philo[n]->used_fork = f;
-		philo[n]->dead = d;
+		philo[n]->dead = tmp.dead;
+		philo[n]->limit = tmp.limit;
+		philo[n]->forks = tmp.forks;
+		philo[n]->end = tmp.end;
 		get_general_input(philo[n], argc, argv);
 		n++;
 	}
 	philo[n] = NULL;
-	thread_init(philo, n_philo);
+	return (0);
 }
