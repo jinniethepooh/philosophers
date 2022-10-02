@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:42:05 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/03 02:54:08 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 # include "philo_colour.h"
 
-typedef struct timeval t_timeval;
+typedef struct timeval	t_timeval;
 
 typedef struct s_time
 {
