@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:36:49 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:25:22 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:54:41 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_log(int s_philo, unsigned long timestamp, const char *act)
 	printf(BLU" %-10ld" CYN " %-5d" WHT " %s" RES, timestamp, s_philo, act);
 }
 
-static void get_general_info(t_philo *philo_tmp, int argc, char **argv)
+static void	get_general_info(t_philo *philo_tmp, int argc, char **argv)
 {
 	philo_tmp->info.n_philo = ft_atoi(argv[1]);
 	philo_tmp->info.time_to.die = ft_atoi(argv[2]);
@@ -64,7 +64,8 @@ int	main(int argc, char **argv)
 				return (1);
 			free_at_exit(philo);
 		}
-		return (malloc_error());
+		else
+			return (malloc_error());
 	}
 	return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 14:38:10 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:54:36 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int thread_init(t_philo *philo, int n_philo)
+static int	thread_init(t_philo *philo, int n_philo)
 {
 	int			n;
 	pthread_t	hp_tracking;

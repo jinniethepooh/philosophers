@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:16:11 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:52:18 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ int				thread_init_error(void);
 // - helper - //
 int				ft_atoi(const char *str);
 void			adj_usleep(unsigned long time_to_ms);
-void			print_log(int s_philo, unsigned long timestamp, const char *act);
+void			print_log(int s_philo, unsigned long timestamp, \
+					const char *act);
 t_timeval		get_now(void);
 unsigned long	get_timestamp(t_timeval now, t_timeval then);
 

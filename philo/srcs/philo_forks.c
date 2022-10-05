@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 23:07:18 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:09:55 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:55:09 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	look_for_forks(t_philo *philo)
 	pthread_mutex_unlock(&philo->log);
 }
 
-static int fork_init(pthread_mutex_t *f, int n_philo)
+static int	fork_init(pthread_mutex_t *f, int n_philo)
 {
 	int	n;
 
@@ -51,6 +51,7 @@ static int fork_init(pthread_mutex_t *f, int n_philo)
 int	assign_forks(t_philo *philo, int n_philo)
 {
 	int	n;
+
 	if (fork_init(philo[0].used_fork, n_philo))
 		return (thread_init_error());
 	n = 0;
