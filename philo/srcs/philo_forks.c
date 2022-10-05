@@ -6,53 +6,65 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 23:07:18 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:37:02 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:09:55 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	get_fork_index(t_philo *philo, char side)
+void	put_forks_back(t_philo *philo)
 {
-	if (philo->info.n_philo == 1)
-		return (0);
-	if (philo->s_philo == philo->info.n_philo)
-		if (side == 'r')
-			return (0);
-	if (side == 'l')
-		return (philo->s_philo - 1);
-	if (side == 'r')
-		return (philo->s_philo);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
+}
+
+void	look_for_forks(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	pthread_mutex_lock(&philo->log);
+	if (!philo->end->found)
+		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
+			"has taken a fork\n");
+	pthread_mutex_unlock(&philo->log);
+	pthread_mutex_lock(philo->right_fork);
+	pthread_mutex_lock(&philo->log);
+	if (!philo->end->found)
+		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
+			"has taken a fork\n");
+	pthread_mutex_unlock(&philo->log);
+}
+
+static int fork_init(pthread_mutex_t *f, int n_philo)
+{
+	int	n;
+
+	n = 0;
+	while (n < n_philo)
+	{
+		if (pthread_mutex_init(&f[n], NULL))
+			return (thread_init_error());
+		n++;
+	}
 	return (0);
 }
 
-void	put_forks_back(t_philo *philo)
+int	assign_forks(t_philo *philo, int n_philo)
 {
-	int	l_index;
-	int	r_index;
-
-	philo->l_fork = 0;
-	philo->r_fork = 0;
-	l_index = get_fork_index(philo, 'l');
-	r_index = get_fork_index(philo, 'r');
-	pthread_mutex_unlock(&(philo->used_fork[l_index]));
-	pthread_mutex_unlock(&(philo->used_fork[r_index]));
-}
-
-void	look_for_forks(t_philo *philo, int *fork, char side)
-{
-	t_timeval	now;
-	int			index;
-
-	index = get_fork_index(philo, side);
-	pthread_mutex_lock(&(philo->used_fork[index]));
-	if (philo->end->found)
+	int	n;
+	if (fork_init(philo[0].used_fork, n_philo))
+		return (thread_init_error());
+	n = 0;
+	if (n_philo == 1)
 	{
-		pthread_mutex_unlock(&(philo->used_fork[index]));
-		return ;
+		philo[n].left_fork = &philo[n].used_fork[n];
+		philo[n].right_fork = &philo[n].used_fork[n];
+		return (0);
 	}
-	gettimeofday(&now, NULL);
-	print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
-		"has taken a fork\n");
-	*fork = 1;
+	while (n < n_philo)
+	{
+		philo[n].left_fork = &philo[n].used_fork[n];
+		philo[n].right_fork = &philo[n].used_fork[(n + 1) % n_philo];
+		n++;
+	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:35:46 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:37:46 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:20:24 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,37 @@ int	ft_atoi(const char *str)
 	return (nbr * sign);
 }
 
-int	get_timestamp(t_timeval now, t_timeval then)
+unsigned long	get_timestamp(t_timeval now, t_timeval then)
 {
-	int	gap;
+	unsigned long	gap;
 
 	gap = (now.tv_sec - then.tv_sec) * 1000;
-	gap += (now.tv_usec - then.tv_usec) / 1000;
+	gap = gap + (now.tv_usec - then.tv_usec) / 1000;
 	return (gap);
 }
 
-int	still_alive(t_timeval now, t_philo *philo)
+t_timeval	get_now(void)
 {
-	int			gap;
-	t_timeval	then;
+	t_timeval	now;
 
-	then = philo->hp;
-	gap = get_timestamp(now, then);
-	return (gap < philo->info.time_to.die);
+	gettimeofday(&now, NULL);
+	return (now);
 }
 
-void	print_log(int s_philo, long timestamp, const char *act)
+unsigned long	get_now_val(void)
 {
-	printf(BLU" %-10ld" CYN " %-5d" WHT " %s" RES, timestamp, s_philo, act);
+	t_timeval	now;
+
+	gettimeofday(&now, NULL);
+	return ((unsigned long)(now.tv_sec * 1000) + (now.tv_usec / 1000));
+}
+
+void	adj_usleep(unsigned long time_to_ms)
+{
+	unsigned long	time;
+
+	time = get_now_val();
+	usleep(time_to_ms * 900);
+	while (get_now_val() < time + time_to_ms)
+		usleep(time_to_ms);
 }

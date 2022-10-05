@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:44:26 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:36:07 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ static void	get_general_input(t_philo *philo, int argc, char **argv)
 		philo->info.time_to.n_eat = ft_atoi(argv[5]);
 	else
 		philo->info.time_to.n_eat = -1;
-	philo->l_fork = 0;
-	philo->r_fork = 0;
+	if (philo->info.time_to.n_eat == 0)
+		philo->info.time_to.n_eat = 1;
 	philo->n_ate = 0;
 }
 

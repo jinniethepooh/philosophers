@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:23:34 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 14:34:20 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,50 +21,48 @@ void	free_mutual(t_philo *philo)
 	{
 		while (i < philo->info.n_philo)
 		{
-			pthread_mutex_destroy(&(philo->used_fork[i]));
+			pthread_mutex_unlock(&philo->used_fork[i]);
+			pthread_mutex_destroy(&philo->used_fork[i]);
 			i++;
 		}
 		free(philo->used_fork);
 	}
 	if (philo->end)
-	{
-		pthread_mutex_destroy(&(philo->end->dead_lock));
 		free(philo->end);
-	}
 }
 
-void	free_at_exit(t_philo **philo)
+void	free_at_exit(t_philo *philo)
 {
-	int	i;
+	int	n;
 
-	i = 0;
+	n = 0;
 	if (philo)
 	{
-		while (philo[i])
+		while (n < philo[0].info.n_philo)
 		{
-			if (i == 0)
-				free_mutual(philo[i]);
-			pthread_detach(philo[i]->life);
-			free(philo[i]);
-			i++;
+			if (n == 0)
+				free_mutual(&philo[n]);
+			pthread_detach(philo[n].life);
+			pthread_mutex_destroy(&philo[n].log);
+			n++;
 		}
 	}
 	free(philo);
 }
 
-void	*malloc_error(void)
+int	malloc_error(void)
 {
 	printf("[ERROR] could not malloc\n");
-	return (NULL);
+	return (1);
 }
 
-void	*thread_init_error(void)
+int	thread_init_error(void)
 {
 	printf("[ERROR] could not initialize thread / mutex\n");
-	return (NULL);
+	return (1);
 }
 
-int	error_input(void)
+int	input_error(void)
 {
 	printf(BRED"[ERROR]"RED" invalid input\n"RES);
 	printf("./philo_bonus [1] [2] [3] [4] [5]\n");

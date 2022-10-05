@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:43:21 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:39:24 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,15 @@ void	*limit_tracker(void *philo_addr)
 
 void	*hp_tracker(void *philo_addr)
 {
-	t_philo		*philo;
-	t_timeval	now;
+	t_philo	*philo;
 
 	philo = (t_philo *)philo_addr;
 	while (1)
 	{
-		gettimeofday(&now, NULL);
 		sem_wait(philo->dead);
-		if (!still_alive(now, philo))
+		if (!still_alive(get_now(), philo))
 		{
-			print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+			print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 				"died\n");
 			put_forks_back(philo);
 			sem_post(philo->end);
@@ -53,37 +51,28 @@ void	*hp_tracker(void *philo_addr)
 
 static void	sleep_cycle(t_philo *philo)
 {
-	t_timeval	now;
-
-	gettimeofday(&now, NULL);
 	sem_wait(philo->dead);
-	print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+	print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 		"is sleeping\n");
 	sem_post(philo->dead);
-	usleep(philo->info.time_to.sleep * 1000);
-	gettimeofday(&now, NULL);
+	adj_usleep(philo->info.time_to.sleep);
 	sem_wait(philo->dead);
-	print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+	print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 		"is thinking\n");
 	sem_post(philo->dead);
 }
 
 static void	eat_cycle(t_philo *philo)
 {
-	t_timeval	now;
-
-	if (!philo->l_fork || !philo->r_fork)
-		look_for_forks(philo);
-	gettimeofday(&now, NULL);
 	sem_wait(philo->dead);
-	print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+	philo->hp = get_now();
+	print_log(philo->s_philo, get_timestamp(philo->hp, philo->kickoff), \
 		"is eating\n");
 	sem_post(philo->dead);
-	philo->hp = now;
 	philo->n_ate += 1;
 	if (philo->n_ate == philo->info.time_to.n_eat)
 		sem_post(philo->limit);
-	usleep(philo->info.time_to.eat * 1000);
+	adj_usleep(philo->info.time_to.eat);
 	put_forks_back(philo);
 }
 
@@ -96,6 +85,7 @@ int	life_cycle(t_philo	*philo)
 		return (1);
 	while (1)
 	{
+		look_for_forks(philo);
 		eat_cycle(philo);
 		sleep_cycle(philo);
 	}

@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 01:12:35 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:19:18 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	free_at_exit(t_philo **philo, int *f_pid, int exit_code)
 	return (exit_code);
 }
 
-int	error_input(void)
+int	input_error(void)
 {
 	printf(BRED"[ERROR]"RED" invalid input\n"RES);
 	printf("./philo_bonus [1] [2] [3] [4] [5]\n");

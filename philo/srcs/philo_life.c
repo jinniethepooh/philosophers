@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:39:04 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:39:59 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,89 +14,82 @@
 
 static int	end_point_found(t_philo *philo, t_timeval now)
 {
-	return ((!still_alive(now, philo) && !philo->end->found) || \
-				philo->end->limit_counter == philo->info.n_philo);
+	if (!still_alive(now, philo) && !philo->end->found)
+		return (philo->s_philo);
+	if (philo->end->limit_counter == philo->info.n_philo)
+		return (-1);
+	return (0);
 }
 
 void	*hp_tracker(void *philo_addr)
 {
-	t_philo		*philo;
-	t_timeval	now;
+	t_philo	*philo;
+	int		n;
 
 	philo = (t_philo *)philo_addr;
-	while (!philo->end->found)
+	while (!philo[0].end->found)
 	{
-		gettimeofday(&now, NULL);
-		pthread_mutex_lock(&(philo->end->dead_lock));
-		if (end_point_found(philo, now))
+		n = 0;
+		while (n < philo[0].info.n_philo)
 		{
-			philo->end->found = philo->s_philo;
-			if (philo->end->limit_counter != philo->info.n_philo)
-				print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
-					"died\n");
-			pthread_mutex_unlock(&(philo->end->dead_lock));
-			put_forks_back(philo);
-			return (NULL);
+			pthread_mutex_lock(&philo[n].log);
+			philo[n].end->found = end_point_found(&philo[n], get_now());
+			if (philo[n].end->found)
+			{
+				if (philo[n].end->found == philo[n].s_philo)
+					print_log(philo[n].s_philo, get_timestamp(get_now(), \
+						philo[n].kickoff), "died\n");
+				pthread_mutex_unlock(&philo[n].log);
+				put_forks_back(&philo[n]);
+				return (NULL);
+			}
+			pthread_mutex_unlock(&philo[n].log);
+			n++;
 		}
-		pthread_mutex_unlock(&(philo->end->dead_lock));
 	}
 	return (NULL);
 }
 
 static void	sleep_cycle(t_philo *philo)
 {
-	t_timeval	now;
-
-	gettimeofday(&now, NULL);
+	pthread_mutex_lock(&philo->log);
 	if (!philo->end->found)
-	{
-		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 			"is sleeping\n");
-		usleep(philo->info.time_to.sleep * 1000);
-		if (philo->end->found)
-			return ;
-		gettimeofday(&now, NULL);
-		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+	pthread_mutex_unlock(&philo->log);
+	adj_usleep(philo->info.time_to.sleep);
+	pthread_mutex_lock(&philo->log);
+	if (!philo->end->found)
+		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 			"is thinking\n");
-	}
+	pthread_mutex_unlock(&philo->log);
 }
 
 static void	eat_cycle(t_philo *philo)
 {
-	t_timeval	now;
-
-	if (!philo->l_fork || !philo->r_fork)
-	{
-		look_for_forks(philo, &(philo->l_fork), 'l');
-		look_for_forks(philo, &(philo->r_fork), 'r');
-	}
+	pthread_mutex_lock(&philo->log);
+	philo->hp = get_now();
 	if (!philo->end->found)
-	{
-		gettimeofday(&now, NULL);
-		print_log(philo->s_philo, get_timestamp(now, philo->kickoff), \
+		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
 			"is eating\n");
-		philo->hp = now;
-		philo->n_ate += 1;
-		if (philo->n_ate == philo->info.time_to.n_eat)
-			philo->end->limit_counter += 1;
-		usleep(philo->info.time_to.eat * 1000);
-		put_forks_back(philo);
-	}
+	pthread_mutex_unlock(&philo->log);
+	philo->n_ate += 1;
+	if (philo->n_ate == philo->info.time_to.n_eat)
+		philo->end->limit_counter += 1;
+	adj_usleep(philo->info.time_to.eat);
+	put_forks_back(philo);
 }
 
 void	*life_cycle(void *philo_addr)
 {
-	t_philo		*philo;
-	pthread_t	hp_tracking;
+	t_philo	*philo;
 
-	philo = philo_addr;
-	if (pthread_create(&hp_tracking, NULL, &hp_tracker, philo))
-		return (NULL);
+	philo = (t_philo *)philo_addr;
 	while (!philo->end->found)
 	{
+		look_for_forks(philo);
 		eat_cycle(philo);
 		sleep_cycle(philo);
 	}
-	pthread_detach(hp_tracking);
 	return (NULL);
 }

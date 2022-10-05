@@ -6,104 +6,84 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:38:02 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 14:38:10 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static pthread_mutex_t	*fork_init(int n_philo)
+static int thread_init(t_philo *philo, int n_philo)
 {
-	int					i;
-	pthread_mutex_t		*f;
+	int			n;
+	pthread_t	hp_tracking;
 
-	f = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * n_philo);
-	if (!f)
-		return (malloc_error());
-	i = 0;
-	while (i < n_philo)
+	n = 0;
+	while (n < n_philo)
 	{
-		if (pthread_mutex_init(&f[i], NULL))
+		if (pthread_create(&philo[n].life, NULL, &life_cycle, &philo[n]))
 			return (thread_init_error());
-		i++;
+		n++;
+		usleep(50);
 	}
-	return (f);
-}
-
-static t_end	*end_init(void)
-{
-	t_end		*e;
-
-	e = (t_end *)malloc(sizeof(t_end));
-	if (!e)
-		return (malloc_error());
-	if (pthread_mutex_init(&(e->dead_lock), NULL))
+	if (pthread_create(&hp_tracking, NULL, &hp_tracker, philo))
 		return (thread_init_error());
-	e->found = 0;
-	e->limit_counter = 0;
-	return (e);
+	n = 0;
+	while (n < n_philo)
+	{
+		if (pthread_join(philo[n].life, NULL))
+			return (thread_init_error());
+		n++;
+	}
+	if (pthread_join(hp_tracking, NULL))
+		return (thread_init_error());
+	pthread_detach(hp_tracking);
+	return (0);
 }
 
-static void	get_general_input(t_philo *philo, int argc, char **argv)
+static void	get_time_philo(t_philo *philo, int n_philo)
 {
-	philo->info.n_philo = ft_atoi(argv[1]);
-	philo->info.time_to.die = ft_atoi(argv[2]);
-	philo->info.time_to.eat = ft_atoi(argv[3]);
-	philo->info.time_to.sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		philo->info.time_to.n_eat = ft_atoi(argv[5]);
-	else
-		philo->info.time_to.n_eat = -1;
-	philo->l_fork = 0;
-	philo->r_fork = 0;
+	t_timeval	now;
+	int			n;
+
+	gettimeofday(&now, NULL);
+	n = 0;
+	while (n < n_philo)
+	{
+		philo[n].kickoff = now;
+		philo[n].hp = now;
+		n++;
+	}
+}
+
+static void	get_general_info(t_philo *philo, t_philo *info)
+{
+	philo->used_fork = info->used_fork;
+	philo->end = info->end;
+	philo->info.n_philo = info->info.n_philo;
+	philo->info.time_to.die = info->info.time_to.die;
+	philo->info.time_to.eat = info->info.time_to.eat;
+	philo->info.time_to.sleep = info->info.time_to.sleep;
+	philo->info.time_to.n_eat = info->info.time_to.n_eat;
 	philo->n_ate = 0;
 }
 
-static void	*thread_init(t_philo **philo, int n_philo)
+int	philo_init(t_philo *philo, t_philo philo_tmp, int n_philo)
 {
-	int	n;
+	int		n;
 
 	n = 0;
 	while (n < n_philo)
 	{
-		if (pthread_create(&(philo[n]->life), NULL, &life_cycle, philo[n]))
-			return (thread_init_error());
-		usleep(5);
-		n++;
-	}
-	n = 0;
-	while (n < n_philo)
-	{
-		if (pthread_join(philo[n]->life, NULL))
+		philo[n].s_philo = n + 1;
+		get_general_info(&philo[n], &philo_tmp);
+		if (pthread_mutex_init(&philo[n].log, NULL))
 			return (thread_init_error());
 		n++;
 	}
-	return (NULL);
-}
-
-void	philo_init(t_philo **philo, int n_philo, int argc, char **argv)
-{
-	int					n;
-	t_timeval			now;
-	t_end				*e;
-	pthread_mutex_t		*f;
-
-	n = 0;
-	gettimeofday(&now, NULL);
-	f = fork_init(n_philo);
-	e = end_init();
-	if (!f || !e)
-		return ;
-	while (n < n_philo)
-	{
-		philo[n]->kickoff = now;
-		philo[n]->hp = now;
-		philo[n]->s_philo = n + 1;
-		philo[n]->used_fork = f;
-		philo[n]->end = e;
-		get_general_input(philo[n], argc, argv);
-		n++;
-	}
-	philo[n] = NULL;
-	thread_init(philo, n_philo);
+	if (assign_forks(philo, n_philo))
+		return (1);
+	get_time_philo(philo, n_philo);
+	if (thread_init(philo, n_philo))
+		return (1);
+	return (0);
 }

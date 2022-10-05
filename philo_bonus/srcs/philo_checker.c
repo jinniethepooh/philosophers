@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:14:16 by cchetana          #+#    #+#             */
-/*   Updated: 2022/09/28 17:48:00 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:23:30 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,23 @@ int	is_validinput(int ac, char **av)
 	int	i;
 
 	if (!av || ac < 5 || ac > 6)
-		return (error_input());
+		return (input_error());
 	i = 1;
 	while (av[i])
 	{
 		if (!loop_checker(av[i]))
-			return (error_input());
+			return (input_error());
 		i++;
 	}
 	return (1);
+}
+
+int	still_alive(t_timeval now, t_philo *philo)
+{
+	unsigned long	gap;
+	t_timeval		then;
+
+	then = philo->hp;
+	gap = get_timestamp(now, then);
+	return (gap <= philo->info.time_to.die);
 }

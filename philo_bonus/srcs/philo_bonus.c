@@ -6,11 +6,16 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:36:49 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/03 02:45:23 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:24:54 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+void	print_log(int s_philo, unsigned long timestamp, const char *act)
+{
+	printf(BLU" %-10ld" CYN " %-5d" WHT " %s" RES, timestamp, s_philo, act);
+}
 
 static int	cycle_end(int *f_pid, int n_philo)
 {
@@ -86,5 +91,5 @@ int	main(int argc, char **argv)
 			return (free_at_exit(philo, f_pid, 3));
 		free_at_exit(philo, f_pid, 0);
 	}
-	return (EXIT_FAILURE);
+	return (0);
 }
