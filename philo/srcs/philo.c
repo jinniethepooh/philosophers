@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:36:49 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:54:41 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:39:26 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	main(int argc, char **argv)
 
 	if (is_validinput(argc, argv))
 	{
-		philo = (t_philo *)malloc(sizeof(t_philo));
+		n_philo = ft_atoi(argv[1]);
+		philo = (t_philo *)malloc(sizeof(t_philo) * n_philo);
 		if (philo)
 		{
-			n_philo = ft_atoi(argv[1]);
 			if (philo_prep(&philo_tmp, n_philo, argc, argv))
 				return (1);
 			if (philo_init(philo, philo_tmp, n_philo))
