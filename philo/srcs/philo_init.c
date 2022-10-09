@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cchetana <cchetana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 11:48:39 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:54:36 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/08 15:54:12 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ static int	thread_init(t_philo *philo, int n_philo)
 	}
 	if (pthread_join(hp_tracking, NULL))
 		return (thread_init_error());
-	pthread_detach(hp_tracking);
 	return (0);
 }
 

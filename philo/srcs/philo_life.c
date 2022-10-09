@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_life.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cchetana <cchetana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:39:59 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/08 17:39:47 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	*hp_tracker(void *philo_addr)
 	int		n;
 
 	philo = (t_philo *)philo_addr;
-	while (!philo[0].end->found)
+	while (1)
 	{
 		n = 0;
 		while (n < philo[0].info.n_philo)
@@ -50,34 +50,39 @@ void	*hp_tracker(void *philo_addr)
 	return (NULL);
 }
 
-static void	sleep_cycle(t_philo *philo)
+static int	sleep_cycle(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->log);
-	if (!philo->end->found)
-		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
-			"is sleeping\n");
+	if (philo->end->found)
+		return (pthread_mutex_unlock(&philo->log));
+	print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
+		"is sleeping\n");
 	pthread_mutex_unlock(&philo->log);
 	adj_usleep(philo->info.time_to.sleep);
 	pthread_mutex_lock(&philo->log);
-	if (!philo->end->found)
-		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
-			"is thinking\n");
+	if (philo->end->found)
+		return (pthread_mutex_unlock(&philo->log));
+	print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
+		"is thinking\n");
 	pthread_mutex_unlock(&philo->log);
+	return (0);
 }
 
-static void	eat_cycle(t_philo *philo)
+static int	eat_cycle(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->log);
 	philo->hp = get_now();
-	if (!philo->end->found)
-		print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
-			"is eating\n");
-	pthread_mutex_unlock(&philo->log);
+	if (philo->end->found)
+		return (pthread_mutex_unlock(&philo->log));
+	print_log(philo->s_philo, get_timestamp(get_now(), philo->kickoff), \
+		"is eating\n");
 	philo->n_ate += 1;
 	if (philo->n_ate == philo->info.time_to.n_eat)
 		philo->end->limit_counter += 1;
+	pthread_mutex_unlock(&philo->log);
 	adj_usleep(philo->info.time_to.eat);
 	put_forks_back(philo);
+	return (0);
 }
 
 void	*life_cycle(void *philo_addr)
@@ -85,11 +90,14 @@ void	*life_cycle(void *philo_addr)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_addr;
-	while (!philo->end->found)
+	while (1)
 	{
-		look_for_forks(philo);
-		eat_cycle(philo);
-		sleep_cycle(philo);
+		if (look_for_forks(philo))
+			break ;
+		if (eat_cycle(philo))
+			break ;
+		if (sleep_cycle(philo))
+			break ;
 	}
 	return (NULL);
 }

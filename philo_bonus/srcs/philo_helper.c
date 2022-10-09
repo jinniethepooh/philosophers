@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cchetana <cchetana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/26 18:35:46 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:21:20 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/08 18:44:13 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,6 @@ void	adj_usleep(unsigned long time_to_ms)
 
 	time = get_now_val();
 	usleep(time_to_ms * 900);
-	while (get_now_val() < time + time_to_ms)
-		usleep(time_to_ms);
+	while (get_now_val() <= time + time_to_ms)
+		usleep(1);
 }

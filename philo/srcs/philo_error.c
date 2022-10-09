@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:28:35 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 14:34:20 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/09 12:38:05 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,12 @@ int	thread_init_error(void)
 int	input_error(void)
 {
 	printf(BRED"[ERROR]"RED" invalid input\n"RES);
-	printf("./philo_bonus [1] [2] [3] [4] [5]\n");
+	printf("[how to] ./philo_bonus [1] [2] [3] [4] [5]\n");
 	printf("[1] no. of philos\n");
 	printf("[2] time to die\n");
 	printf("[3] time to eat\n");
 	printf("[4] time to sleep\n");
 	printf("[5] (optional) number of times each philo must eat\n");
+	printf(RED"caution: [1] - [4] should be greater than 0\n"RES);
 	return (0);
 }

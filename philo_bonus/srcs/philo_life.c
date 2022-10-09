@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_life.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cchetana <cchetana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/24 15:13:38 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:39:24 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/08 18:14:02 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,10 @@ static void	eat_cycle(t_philo *philo)
 	philo->hp = get_now();
 	print_log(philo->s_philo, get_timestamp(philo->hp, philo->kickoff), \
 		"is eating\n");
-	sem_post(philo->dead);
 	philo->n_ate += 1;
 	if (philo->n_ate == philo->info.time_to.n_eat)
 		sem_post(philo->limit);
+	sem_post(philo->dead);
 	adj_usleep(philo->info.time_to.eat);
 	put_forks_back(philo);
 }

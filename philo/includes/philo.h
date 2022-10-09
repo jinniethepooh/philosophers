@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: cchetana <cchetana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 23:48:33 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 15:52:18 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/08 15:23:18 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void			*hp_tracker(void *philo_addr);
 
 // - life w/ forks - //
 int				assign_forks(t_philo *philo, int n_philo);
-void			look_for_forks(t_philo *philo);
+int				look_for_forks(t_philo *philo);
 void			put_forks_back(t_philo *philo);
 
 #endif

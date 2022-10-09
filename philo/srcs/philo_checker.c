@@ -6,7 +6,7 @@
 /*   By: cchetana <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/18 15:14:16 by cchetana          #+#    #+#             */
-/*   Updated: 2022/10/05 14:26:48 by cchetana         ###   ########.fr       */
+/*   Updated: 2022/10/09 12:35:53 by cchetana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ int	is_validinput(int ac, char **av)
 	int	i;
 
 	if (!av || ac < 5 || ac > 6)
+		return (input_error());
+	if (ft_atoi(av[1]) == 0)
 		return (input_error());
 	i = 1;
 	while (av[i])
